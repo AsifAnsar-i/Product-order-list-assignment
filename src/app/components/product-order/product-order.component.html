@@ -1,0 +1,99 @@
+<div class="container mx-auto p-6 max-w-4xl">
+  <form
+    [formGroup]="orderForm"
+    (ngSubmit)="showOrder()"
+    class="bg-white shadow-lg rounded-lg p-6"
+  >
+    <h2 class="text-2xl font-bold mb-4">Product Order List</h2>
+    <div formArrayName="orderItems">
+      <div
+        *ngFor="let item of orderItems.controls; let i = index"
+        [formGroupName]="i"
+        class="flex space-x-4 mb-4 items-center border-b border-gray-200 pb-4"
+      >
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700">Product</label>
+          <select
+            formControlName="product"
+            class="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+          >
+            <option value="" disabled>Choose Product</option>
+            <option *ngFor="let product of products" [value]="product">
+              {{ product }}
+            </option>
+          </select>
+          <div
+            *ngIf="item.get('product')?.touched && item.get('product')?.invalid"
+            class="text-red-500 text-sm mt-1"
+          >
+            Product is required.
+          </div>
+        </div>
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700"
+            >Quantity</label
+          >
+          <select
+            formControlName="quantity"
+            class="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+          >
+            <option value="" disabled>Choose Quantity</option>
+            <option *ngFor="let num of quantities" [value]="num">
+              {{ num }}
+            </option>
+          </select>
+          <div
+            *ngIf="
+              item.get('quantity')?.touched && item.get('quantity')?.invalid
+            "
+            class="text-red-500 text-sm mt-1"
+          >
+            Quantity is required.
+          </div>
+        </div>
+        <div class="flex items-center -mb-5">
+          <button
+            type="button"
+            (click)="addRow()"
+            class="btn btn-primary px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            ADD
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-success mt-4 px-6 py-3 rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+    >
+      Show Order
+    </button>
+  </form>
+
+  <!-- <div *ngIf="showingOrder" class="mt-8 bg-gray-50 p-4 rounded-lg shadow-md">
+      <h3 class="text-xl font-semibold mb-2">Order List:</h3>
+      <ul class="list-disc list-inside">
+        <li *ngFor="let item of orderList" class="text-gray-800">{{ item.product }}: {{ item.quantity }}</li>
+      </ul>
+    </div> -->
+
+  <div *ngIf="showingOrder" class="mt-8 bg-gray-50 p-4 rounded-lg shadow-md">
+    <h3 class="text-xl font-semibold mb-2">Order List:</h3>
+    <h3 *ngIf="noItemsMessage" class="text-sm font-semibold mb-2">
+      {{ noItemsMessage }}
+    </h3>
+    <ul *ngIf="!noItemsMessage" class="list-disc list-inside">
+      <li *ngFor="let item of orderList" class="text-gray-800">
+        {{ item.product }}: {{ item.quantity }}
+      </li>
+    </ul>
+  </div>
+
+  <button
+    (click)="readOrder()"
+    class="btn btn-info mt-4 px-6 py-3 rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+  >
+    What is my Order?
+  </button>
+</div>
