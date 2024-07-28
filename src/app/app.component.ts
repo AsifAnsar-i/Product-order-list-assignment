@@ -7,7 +7,7 @@ import { ProductOrderComponent } from "./components/product-order/product-order.
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ReactiveFormsModule, ProductOrderComponent],
+  imports: [RouterOutlet, ReactiveFormsModule, ProductOrderComponent,HttpClientModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })

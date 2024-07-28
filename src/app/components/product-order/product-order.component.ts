@@ -1,35 +1,44 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { TextToSpeechService } from '../../services/text-to-speech.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-product-order',
   templateUrl: './product-order.component.html',
-  styleUrls: ['./product-order.component.css'] ,
+  styleUrls: ['./product-order.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule]
+  imports: [ReactiveFormsModule, CommonModule],
 })
 export class ProductOrderComponent implements OnInit {
   orderForm!: FormGroup;
-  products = ['Pencil', 'Eraser', 'Pen']; // Sample products
-  quantities = [1, 2, 3, 4, 5]; // Quantities from 1 to 5
+  products = ['Pencil', 'Eraser', 'Pen']; 
+  quantities = [1, 2, 3, 4, 5]; 
   showingOrder = false;
   orderList: any[] = [];
   noItemsMessage = '';
 
-  constructor(private fb: FormBuilder, private textToSpeechService: TextToSpeechService) {}
+  constructor(
+    private fb: FormBuilder,
+    private textToSpeechService: TextToSpeechService
+  ) {}
 
   ngOnInit(): void {
     this.orderForm = this.fb.group({
-      orderItems: this.fb.array([this.createOrderItem()])
+      orderItems: this.fb.array([this.createOrderItem()]),
     });
   }
 
   createOrderItem(): FormGroup {
     return this.fb.group({
       product: ['', Validators.required],
-      quantity: ['', Validators.required]
+      quantity: ['', Validators.required],
     });
   }
 
@@ -43,17 +52,17 @@ export class ProductOrderComponent implements OnInit {
 
     if (lastControl.invalid) {
       lastControl.markAllAsTouched();
-      return; // Do not add a new row if the last row is invalid
+      return; 
     }
 
     this.orderItems.push(this.createOrderItem());
   }
 
   showOrder(): void {
-   
-
     this.showingOrder = true;
-    this.orderList = this.orderItems.value.filter((item: { product: any; quantity: any; }) => item.product && item.quantity); // Filter out empty entries
+    this.orderList = this.orderItems.value.filter(
+      (item: { product: any; quantity: any }) => item.product && item.quantity
+    ); 
 
     if (this.orderList.length === 0) {
       this.noItemsMessage = 'No items added yet.';
@@ -68,26 +77,38 @@ export class ProductOrderComponent implements OnInit {
       return;
     }
 
-    const orderText = this.orderList.map(item => `${item.product}: ${item.quantity}`).join(', ');
+    const orderText = this.orderList
+      .map((item) => `${item.product} ${item.quantity}`)
+      .join(', ');
+
     this.textToSpeechService.speak(orderText).subscribe(
       (blob: Blob) => {
-        // Create a URL for the blob
+       
         const url = URL.createObjectURL(blob);
         const audio = new Audio(url);
 
-        // Play the audio and handle errors
-        audio.play().then(() => {
-          console.log('Audio is playing');
-        }).catch(error => {
-          console.error('Error playing audio:', error);
-        });
+       
+        const playPromise = audio.play();
 
-        // Release the object URL after playback
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('Audio is playing');
+            })
+            .catch((error) => {
+              console.error('Error playing audio:', error);
+              alert(
+                'Failed to play audio. Please interact with the page to enable audio playback.'
+              );
+            });
+        }
+
+       
         audio.addEventListener('ended', () => {
           URL.revokeObjectURL(url);
         });
       },
-      error => console.error('Error calling text-to-speech service:', error)
+      (error) => console.error('Error calling text-to-speech service:', error)
     );
   }
 }

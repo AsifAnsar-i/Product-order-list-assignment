@@ -71,13 +71,6 @@
     </button>
   </form>
 
-  <!-- <div *ngIf="showingOrder" class="mt-8 bg-gray-50 p-4 rounded-lg shadow-md">
-      <h3 class="text-xl font-semibold mb-2">Order List:</h3>
-      <ul class="list-disc list-inside">
-        <li *ngFor="let item of orderList" class="text-gray-800">{{ item.product }}: {{ item.quantity }}</li>
-      </ul>
-    </div> -->
-
   <div *ngIf="showingOrder" class="mt-8 bg-gray-50 p-4 rounded-lg shadow-md">
     <h3 class="text-xl font-semibold mb-2">Order List:</h3>
     <h3 *ngIf="noItemsMessage" class="text-sm font-semibold mb-2">
@@ -92,7 +85,7 @@
 
   <button
     (click)="readOrder()"
-    class="btn btn-info mt-4 px-6 py-3 rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+    class="flex mx-auto justify-center mt-4 px-6 py-3 rounded-md  text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
   >
     What is my Order?
   </button>
